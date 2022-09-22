@@ -6,6 +6,7 @@ FT_PRINTF_DIR = ft_printf/
 GNL = get_next_line/getnextline.a
 GNL_DIR = get_next_line/
 
+
 CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
