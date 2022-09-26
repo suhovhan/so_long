@@ -48,10 +48,8 @@ int	check_params(int ac, char **av)
 		return (0);
 	}
 	else
-	{
 		if (!input_params_error(filename))
 			return (0);
-	}
 	return (1);
 }
 
@@ -74,27 +72,28 @@ int	check_middle_row(char *str)
 	int	i;
 
 	i = 0;
-	if ((str[0] != '1') && (str[ft_strlen(str) - 1] != '1'))
+	if ((str[0] != '1') || (str[ft_strlen(str) - 2] != '1'))
 		return (0);
 	return (1);
 }
 
-int	check_map_wall(char **matrix)
+int	check_map_wall(t_map map)
 {
 	int	i;
+	int	wdth;
 
 	i = 0;
-	if (!check_first_last_row(matrix[i]))
+	if (!check_first_last_row(map.matrix[0]) || !check_first_last_row(map.matrix[map.height - 1]))
 		return (0);
-	i++;
-	while (matrix[i])
+	if ((int)ft_strlen(map.matrix[map.height - 1]) != map.width)
+		return (0);
+	while (++i < map.height - 1)
 	{
-		if (!check_middle_row(matrix[i]))
+		wdth = (int)ft_strlen(map.matrix[i]) - 1;
+		if (wdth != map.width)
 			return (0);
-		if (!matrix[i + 1])
-			if (!check_first_last_row(matrix[i]))
-				return (0);
-		i++;
+		if (!check_middle_row(map.matrix[i]))
+			return (0);
 	}
-	return (0);
+	return (1);
 }
