@@ -1,8 +1,5 @@
 NAME = so_long
 
-FT_PRINTF = ft_printf/libftprintf.a
-FT_PRINTF_DIR = ft_printf/
-
 CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
@@ -18,21 +15,16 @@ RM = rm -f
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(FT_PRINTF) $(NAME)
-
-
-$(FT_PRINTF):
-	$(MAKE) -C $(FT_PRINTF_DIR)
+all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(LINKS) -o $(NAME) $(OBJS) $(FT_PRINTF)
+	$(CC) $(CFLAGS) $(LINKS) -o $(NAME) $(OBJS)
+
 
 clean:
-	$(MAKE) clean -C $(FT_PRINTF_DIR)
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(MAKE) fclean -C $(FT_PRINTF_DIR)
 	$(RM) $(NAME)
 
 re: fclean all

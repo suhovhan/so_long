@@ -1,37 +1,49 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: suhovhan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/28 18:13:54 by suhovhan          #+#    #+#             */
+/*   Updated: 2022/09/28 18:13:56 by suhovhan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-int	free_and_exit(t_map map)
+int	free_and_exit(t_data *arg)
 {
 	int	i;
 
 	i = -1;
-	while (map.matrix[++i])
-		free(map.matrix[i]);
-	free(map.matrix);
-	// exit(0);
+	while (arg->map->matrix[++i])
+		free(arg->map->matrix[i]);
+	free(arg->map->matrix);
+	exit(0);
 	return (0);
 }
 
-int	check_count_person(t_map map)
+int	check_count_person(t_data *arg)
 {
 	int		i;
 	int		j;
 	char	p;
 	char	e;
 
-	i = -1;;
+	i = -1;
 	p = 0;
 	e = 0;
-	while (map.matrix[++i])
+	while (arg->map->matrix[++i])
 	{
 		j = -1;
-		while (map.matrix[i][++j])
+		while (arg->map->matrix[i][++j])
 		{
-			if (map.matrix[i][j] == 'P' && p == 1)
+			if (arg->map->matrix[i][j] == 'P' && p == 1)
 				return (0);
-			else if (map.matrix[i][j] == 'P' && p == 0)
+			else if (arg->map->matrix[i][j] == 'P' && p == 0)
 				p++;
-			if (map.matrix[i][j] == 'E')
+			if (arg->map->matrix[i][j] == 'E')
 				e++;
 		}
 	}
@@ -40,71 +52,66 @@ int	check_count_person(t_map map)
 	return (1);
 }
 
-int	check_map(t_map map)
+int	check_map(t_data *arg)
 {
 	int		i;
 	int		j;
 	char	c;
 
 	i = -1;
-	if (!check_map_wall(map) || !check_count_person(map))
+	if (!check_map_wall(arg) || !check_count_person(arg))
 		return (0);
-	while (map.matrix[++i])
+	while (arg->map->matrix[++i])
 	{
 		j = -1;
-		while (map.matrix[i][++j])
+		while (arg->map->matrix[i][++j])
 		{
-			c = map.matrix[i][j];
-			if ((c != '0') && (c != '1') && (c != 'C') && (c != 'P') && (c != 'E') && (c != 'K') && (c != '\n'))
+			c = arg->map->matrix[i][j];
+			if ((c != '0') && (c != '1') && (c != 'C') && (c != 'P') \
+			&& (c != 'E') && (c != 'K') && (c != '\n'))
 				return (0);
 		}
 	}
 	return (1);
 }
 
-t_map	map_size(int fd)
+void	map_size(t_data *arg, int fd)
 {
-	t_map	map;
 	char	*line;
 
 	line = get_next_line(fd);
-	map.height = 0;
-	map.width = ft_strlen(line) - 1;
+	arg->map->height = 0;
+	arg->map->width = (int)ft_strlen(line) - 1;
 	while (line)
 	{
-		map.height++;
+		arg->map->height++;
 		free(line);
 		line = get_next_line(fd);
 	}
 	free(line);
 	close(fd);
-	return (map);
 }
 
-t_map	get_map(int ac, char **av)
+void	get_map(t_data *arg, int ac, char **av)
 {
 	int		i;
 	int		fd;
-	t_map	map;
 
 	if (!check_params(ac, av))
 		exit(0);
-	i = 0;
 	fd = open(av[1], O_RDONLY);
-	map = map_size(open(av[1], O_RDONLY));
-	map.matrix = (char **)malloc(sizeof(char) * map.height);
-	while (i <= map.height)
+	map_size(arg, open(av[1], O_RDONLY));
+	arg->map->matrix = (char **)malloc(sizeof(char *) * arg->map->height + 1);
+	i = -1;
+	while (++i < arg->map->height)
 	{
-		map.matrix[i] = (char *)malloc(sizeof(char) * map.width);
-		map.matrix[i] = get_next_line(fd);
-		i++;
+		arg->map->matrix[i] = get_next_line(fd);
 	}
-	map.matrix[map.height] = 0;
+	arg->map->matrix[arg->map->height] = 0;
 	close(fd);
-	if (!check_map(map))
+	if (!check_map(arg))
 	{
 		ft_printf("Invalid map");
 		exit(0);
 	}
-	return (map);
 }

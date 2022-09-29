@@ -1,32 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: suhovhan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/28 18:13:44 by suhovhan          #+#    #+#             */
+/*   Updated: 2022/09/28 18:13:46 by suhovhan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 int	main(int ac, char **av)
 {
-	t_map	map;
-	t_img	img;
-	t_vars	vars;
+	t_data	*arg;
 
-	map = get_map(ac, av);
-	vars.mlx = mlx_init();
-	ft_printf("OK!\n");
-	img.i_0 = "./img/map.xpm";
-	img.i_1 = "./img/wall.xpm";
-	img.p_d = "./img/pers_D.xpm";
-	img.p_a = "./img/pers_A.xpm";
-	img.p_s = "./img/pers_S.xpm";
-	img.p_w = "./img/pers_W.xpm";
-	img.i_c = "./img/coin.xpm";
-	img.i_e = "./img/exit.xpm";
-	img.i_k = "./img/enemy.xpm";
-	img.xpm_1 = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_0 = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_pd = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_pa = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_pw = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_ps = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_c = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_e = mlx_new_image(vars.mlx, SIZE, SIZE);
-	img.xpm_k = mlx_new_image(vars.mlx, SIZE, SIZE);
-	free_and_exit(map);
+	arg = malloc(sizeof(t_data));
+	arg->imgs = malloc(sizeof(t_img));
+	arg->map = malloc(sizeof(t_map));
+	arg->vars = malloc(sizeof(t_vars));
+	arg->pos = malloc(sizeof(t_pos));
+	get_map(arg, ac, av);
+	arg->vars->mlx = mlx_init();
+	arg->vars->size_x = arg->map->width * SIZE;
+	arg->vars->size_y = arg->map->height * SIZE;
+	arg->vars->win = mlx_new_window(arg->vars->mlx, \
+	arg->vars->size_x, arg->vars->size_y, "PAC_MAN:))");
+	create_imges(arg);
+	put_imges(D, arg);
+	mlx_hook(arg->vars->win, 2, 1l << 0, move, arg);
+	mlx_hook(arg->vars->win, 17, 1l << 0, close_game, arg);
+	mlx_loop(arg->vars->mlx);
+	free_and_exit(arg);
 	return (0);
 }

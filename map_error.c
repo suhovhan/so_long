@@ -77,22 +77,24 @@ int	check_middle_row(char *str)
 	return (1);
 }
 
-int	check_map_wall(t_map map)
+int	check_map_wall(t_data *arg)
 {
 	int	i;
 	int	wdth;
 
 	i = 0;
-	if (!check_first_last_row(map.matrix[0]) || !check_first_last_row(map.matrix[map.height - 1]))
+	if (!check_first_last_row(arg->map->matrix[0]) || \
+	!check_first_last_row(arg->map->matrix[arg->map->height - 1]))
 		return (0);
-	if ((int)ft_strlen(map.matrix[map.height - 1]) != map.width)
+	if ((int)ft_strlen(arg->map->matrix[arg->map->height - 1]) \
+	!= arg->map->width)
 		return (0);
-	while (++i < map.height - 1)
+	while (++i < arg->map->height - 1)
 	{
-		wdth = (int)ft_strlen(map.matrix[i]) - 1;
-		if (wdth != map.width)
+		wdth = (int)ft_strlen(arg->map->matrix[i]) - 1;
+		if (wdth != arg->map->width)
 			return (0);
-		if (!check_middle_row(map.matrix[i]))
+		if (!check_middle_row(arg->map->matrix[i]))
 			return (0);
 	}
 	return (1);
